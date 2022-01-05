@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateOrdersTable extends Migration
@@ -22,6 +23,7 @@ class CreateOrdersTable extends Migration
             $table->string('creator_id');
             $table->integer('value_added_taxes')->nullable();
             $table->string('partner_id');
+            //$table->integer('order_price')->nullable();
             $table->string('delivery_address');
             $table->string('delivery_information')->nullable();
             $table->timestamp('estimated_delivery_at')->nullable();
@@ -29,7 +31,7 @@ class CreateOrdersTable extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 
             //
-            $table->primary('order_id');
+            $table->index('order_id');
             $table->index('creator_id');
             $table->index('partner_id');
         });

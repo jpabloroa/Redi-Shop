@@ -27,7 +27,7 @@ class CreateArticlesTable extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 
             //
-            $table->primary('article_id');
+            $table->index('article_id');
             $table->index('creator_id');
         });
     }

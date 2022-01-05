@@ -28,6 +28,7 @@ class Order extends Model
         'order_id' => ['required', 'string', 'max:255'],
         'article_id' => ['required', 'string', 'max:255'],
         'creator_id' => ['required', 'string', 'max:255'],
+        'value_added_taxes' => ['integer', 'max:255'],
         'partner_id' => ['required', 'string', 'max:255'],
         'delivery_address' => ['required', 'string', 'max:255'],
         'delivery_information' => ['string', 'max:255'],

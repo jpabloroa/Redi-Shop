@@ -26,7 +26,7 @@ class CreateCreatorsTable extends Migration
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 
             //
-            $table->primary('username');
+            $table->index('username');
             $table->index('brand_name');
         });
     }
