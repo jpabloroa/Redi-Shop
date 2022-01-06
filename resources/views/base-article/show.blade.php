@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('template_title')
-    {{ $baseArticle->name ?? 'Show Base Article' }}
+    {{__('Ver '.$baseArticle->article_id)}}
 @endsection
 
 @section('content')
@@ -11,7 +11,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="float-left">
-                            <span class="card-title">Show Base Article</span>
+                            <span class="card-title">{{__('Ver '.$baseArticle->article_id)}}</span>
                         </div>
                         <div class="float-right">
                             <a class="btn btn-primary" href="{{ route('articulos-base.index') }}"> Back</a>
@@ -21,23 +21,23 @@
                     <div class="card-body">
 
                         <div class="form-group">
-                            <strong>Article Id:</strong>
+                            <strong>{{__('Id Artículo')}}:</strong>
                             {{ $baseArticle->article_id }}
                         </div>
                         <div class="form-group">
-                            <strong>Article Blob:</strong>
-                            {{ $filesManager->getImage($baseArticle->article_blob, ['codec' => '']) }}
+                            <strong>{{__('Directorio Archivo Blob - hash/sha256')}}:</strong>
+                            {!! $filesManager->getImage($baseArticle->article_blob, ['codec' => '']) !!}
                         </div>
                         <div class="form-group">
-                            <strong>Material Json:</strong>
+                            <strong>{{__('Especificaciones artículo - Json')}}:</strong>
                             {{ $baseArticle->material_json }}
                         </div>
                         <div class="form-group">
-                            <strong>Sizes Json:</strong>
+                            <strong>{{__('Tallas - Json')}}:</strong>
                             {{ $baseArticle->sizes_json }}
                         </div>
                         <div class="form-group">
-                            <strong>Price:</strong>
+                            <strong>{{__('Precio $COP')}}:</strong>
                             {{ $baseArticle->price }}
                         </div>
 

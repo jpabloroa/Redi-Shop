@@ -47,22 +47,27 @@ class BaseArticleController extends Controller
      */
     public function store(Request $request)
     {
-        request()->validate(BaseArticle::$rules);
+        try {
+            request()->validate(BaseArticle::$rules);
 
-        $formater = new Formatter();
-        $fileManager = new FileManager();
+            $formater = new Formatter();
+            $fileManager = new FileManager();
 
-        $baseArticle = BaseArticle::create([
-            'article_id' => $request->article_id,
-            'article_blob' => $fileManager->storeImage($request->file('article_blob')),
-            'specs_json' => (isset($request->specs_json) && $request->specs_json != null) ? $request->specs_json : '{}',
-            'sizes_json' => (isset($request->sizes_json) && $request->sizes_json != null) ? $request->sizes_json : '{}',
-            'price' => DB::raw('CAST(' . $request->price . ' as decimal(16,2))'),
-            'updated_at' => $formater->getTime('0 days', 'America/Bogota', 'Y-m-d H:i:s')
-        ]);
+            $baseArticle = BaseArticle::create([
+                'article_id' => $request->article_id,
+                'article_blob' => $fileManager->storeImage($request->file('article_blob')),
+                'specs_json' => (isset($request->specs_json) && $request->specs_json != null) ? $request->specs_json : '{}',
+                'sizes_json' => (isset($request->sizes_json) && $request->sizes_json != null) ? $request->sizes_json : '{}',
+                'price' => DB::raw('CAST(' . $request->price . ' as decimal(16,2))'),
+                'updated_at' => $formater->getTime('0 days', 'America/Bogota', 'Y-m-d H:i:s')
+            ]);
 
-        return redirect()->route('articulos-base.index')
-            ->with('success', 'BaseArticle created successfully.');
+            return redirect()->route('articulos-base.index')
+                ->with('success', 'Recurso ' . $request->article_id . ' creado exitosamente');
+        } catch (\Exception $e) {
+            return redirect()->route('articulos-base.index')
+                ->with('error', 'Error! - Detalles: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -101,21 +106,27 @@ class BaseArticleController extends Controller
      */
     public function update(Request $request, BaseArticle $baseArticle, $id = '')
     {
-        request()->validate(BaseArticle::$rules);
+        try {
+            request()->validate(BaseArticle::$rules);
 
-        $formater = new Formatter();
-        $fileManager = new FileManager();
+            $formater = new Formatter();
+            $fileManager = new FileManager();
 
-        $baseArticle->where("article_id", '=', $id)->update([
-            'article_blob' => $fileManager->storeImage($request->file('article_blob')),
-            'specs_json' => $request->specs_json,
-            'sizes_json' => $request->sizes_json,
-            'price' => number_format($request->price, 2),
-            'updated_at' => $formater->getTime()
-        ]);
+            $baseArticle->where("article_id", '=', $id)->update([
+                'article_blob' => $fileManager->storeImage($request->file('article_blob')),
+                'specs_json' => $request->specs_json,
+                'sizes_json' => $request->sizes_json,
+                'price' => number_format($request->price, 2),
+                'updated_at' => $formater->getTime()
+            ]);
 
-        return redirect()->route('articulos-base.index')
-            ->with('success', 'BaseArticle updated successfully');
+            return redirect()->route('articulos-base.index')
+                ->with('success', 'Recurso ' . $request->article_id . ' editado exitosamente');
+        } catch (\Exception $e) {
+            return redirect()->route('articulos-base.index')
+                ->with('error', 'Error! - Detalles: ' . $e->getMessage());
+        }
+
     }
 
     /**
@@ -125,9 +136,14 @@ class BaseArticleController extends Controller
      */
     public function destroy($id)
     {
-        $baseArticle = BaseArticle::where("article_id", '=', $id)->delete();
+        try {
+            $baseArticle = BaseArticle::where("article_id", '=', $id)->delete();
 
-        return redirect()->route('articulos-base.index')
-            ->with('success', 'BaseArticle deleted successfully');
+            return redirect()->route('articulos-base.index')
+                ->with('success', 'Recurso ' . $id . ' eliminado exitosamente');
+        } catch (\Exception $e) {
+            return redirect()->route('articulos-base.index')
+                ->with('error', 'Error! - Detalles: ' . $e->getMessage());
+        }
     }
 }

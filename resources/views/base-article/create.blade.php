@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('template_title')
-    Create Base Article
+    {{__('Crear Artículo Base')}}
 @endsection
 
 @section('content')
@@ -13,10 +13,11 @@
 
                 <div class="card card-default">
                     <div class="card-header">
-                        <span class="card-title">Create Base Article</span>
+                        <span class="card-title">{{__('Nuevo Artículo Base')}}</span>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="{{ route('articulos-base.store') }}"  role="form" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('articulos-base.store') }}" role="form"
+                              enctype="multipart/form-data">
                             @csrf
 
                             @include('base-article.form')

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('template_title')
-    Update Base Article
+    {{__('Actualizar Artículo Base')}}
 @endsection
 
 @section('content')
@@ -13,10 +13,11 @@
 
                 <div class="card card-default">
                     <div class="card-header">
-                        <span class="card-title">Update Base Article</span>
+                        <span class="card-title">{{__('Editar Artículo Base #'.$baseArticle->article_id)}}</span>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="{{ route('articulos-base.update', $baseArticle->id) }}"  role="form" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('articulos-base.update', $baseArticle->article_id) }}"
+                              role="form" enctype="multipart/form-data">
                             {{ method_field('PATCH') }}
                             @csrf
 

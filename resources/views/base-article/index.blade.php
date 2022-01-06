@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('template_title')
-    Base Article
+    {{__('Artículos Base')}}
 @endsection
 
 @section('content')
@@ -28,6 +28,10 @@
                         <div class="alert alert-success">
                             <p>{{ $message }}</p>
                         </div>
+                    @elseif ($message = Session::get('error'))
+                        <div class="alert alert-danger">
+                            <p>{{ $message }}</p>
+                        </div>
                     @endif
 
                     <div class="card-body">
@@ -35,13 +39,12 @@
                             <table class="table table-striped table-hover">
                                 <thead class="thead">
                                 <tr>
-                                    <th>No</th>
-
-                                    <th>Article Id</th>
-                                    <th>Article Blob</th>
-                                    <th>Material Json</th>
-                                    <th>Sizes Json</th>
-                                    <th>Price</th>
+                                    <th>#</th>
+                                    <th>{{__('Id Artículo')}}</th>
+                                    <th>{{__('Directorio Archivo Blob - hash/sha256')}}</th>
+                                    <th>{{__('Especificaciones artículo - Json')}}</th>
+                                    <th>{{__('Tallas - Json')}}</th>
+                                    <th>{{__('Precio $COP')}}</th>
 
                                     <th></th>
                                 </tr>
@@ -52,20 +55,20 @@
                                         <td>{{ ++$i }}</td>
 
                                         <td>{{ $baseArticle->article_id }}</td>
-                                        <td>{{ $baseArticle->article_blob }}</td>
+                                        <td>{!! $filesManager->getImage($baseArticle->article_blob,['codec'=>'']) !!}</td>
                                         <td>{{ $baseArticle->material_json }}</td>
                                         <td>{{ $baseArticle->sizes_json }}</td>
                                         <td>{{ $baseArticle->price }}</td>
 
                                         <td>
                                             <form
-                                                action="{{ route('articulos-base.destroy',$baseArticle->id) }}"
+                                                action="{{ route('articulos-base.destroy',$baseArticle->article_id) }}"
                                                 method="POST">
                                                 <a class="btn btn-sm btn-primary "
-                                                   href="{{ route('articulos-base.show',$baseArticle->id) }}"><i
+                                                   href="{{ route('articulos-base.show',$baseArticle->article_id) }}"><i
                                                         class="fa fa-fw fa-eye"></i> Show</a>
                                                 <a class="btn btn-sm btn-success"
-                                                   href="{{ route('articulos-base.edit',$baseArticle->id) }}"><i
+                                                   href="{{ route('articulos-base.edit',$baseArticle->article_id) }}"><i
                                                         class="fa fa-fw fa-edit"></i> Edit</a>
                                                 @csrf
                                                 @method('DELETE')

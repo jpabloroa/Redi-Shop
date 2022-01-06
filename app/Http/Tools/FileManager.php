@@ -76,4 +76,8 @@ class FileManager
         }
     }
 
+    public function deleteImage(){
+
+    }
+
 }
