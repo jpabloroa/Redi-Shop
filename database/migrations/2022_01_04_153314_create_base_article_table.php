@@ -14,12 +14,12 @@ class CreateBaseArticleTable extends Migration
      */
     public function up()
     {
-        Schema::create('base_article', function (Blueprint $table) {
+        Schema::create('base_articles', function (Blueprint $table) {
             //
             $table->id();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->string('article_id');
-            $table->binary('article_blob');
+            $table->string('article_blob');
             $table->string('specs_json');
             $table->string('sizes_json');
             $table->decimal('price');
@@ -37,6 +37,6 @@ class CreateBaseArticleTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('base_article');
+        Schema::dropIfExists('base_articles');
     }
 }

@@ -4,6 +4,8 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\BaseArticleController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PartnerController;
+use App\Http\Tools\FileManager;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +26,17 @@ Route::get('/', function () {
 
 Route::get('/pruebas', function () {
     return view('pruebas');
+});
+Route::post('/pruebas-post', function (Request $request) {
+    $manager = new FileManager();
+    if ($request->hasFile('file')) {
+        $filepath = $manager->storeImage($request->file('file'));
+        echo '<h1>' . $filepath . '</h1>';
+        echo $manager->getImage($filepath, ['codec' => '']);
+    }
+
+    echo '<hr>';
+    //echo '<h1>' . $manager->storeImage($_POST['file']) . '</h1>';
 });
 
 Route::get('/dashboard', function () {

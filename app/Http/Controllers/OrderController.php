@@ -99,15 +99,6 @@ class OrderController extends Controller
     {
         $order = Order::where("order_id", '=', $id)->get()[0];
 
-        //echo (isset($order['order_id']))?$order['order_id']:'no definido';
-        /*
-                foreach ($order as $i => $reg) {
-                    echo "MainKey $i val $reg";
-                    foreach ($reg as $key => $val) {
-                        //echo "Key $key, value $val<br>";
-                        echo "Key $key, value $val<br>";
-                    }
-                }*/
         return view('order.edit', compact('order'));
     }
 
@@ -132,6 +123,7 @@ class OrderController extends Controller
             'estimated_delivery_at' => $request->estimated_delivery_at,
             'delivered_at' => $request->delivered_at
         ]);
+
         return redirect()->route('pedidos.index')->with('success', 'Order updated successfully');
     }
 

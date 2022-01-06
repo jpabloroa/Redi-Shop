@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Tools\FileManager;
+use App\Http\Tools\Formatter;
 use App\Models\BaseArticle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class BaseArticleController
@@ -19,8 +22,9 @@ class BaseArticleController extends Controller
     public function index()
     {
         $baseArticles = BaseArticle::paginate();
+        $filesManager = new FileManager();
 
-        return view('base-article.index', compact('baseArticles'))
+        return view('base-article.index', compact('baseArticles', 'filesManager'))
             ->with('i', (request()->input('page', 1) - 1) * $baseArticles->perPage());
     }
 
@@ -38,14 +42,24 @@ class BaseArticleController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         request()->validate(BaseArticle::$rules);
 
-        $baseArticle = BaseArticle::create($request->all());
+        $formater = new Formatter();
+        $fileManager = new FileManager();
+
+        $baseArticle = BaseArticle::create([
+            'article_id' => $request->article_id,
+            'article_blob' => $fileManager->storeImage($request->file('article_blob')),
+            'specs_json' => (isset($request->specs_json) && $request->specs_json != null) ? $request->specs_json : '{}',
+            'sizes_json' => (isset($request->sizes_json) && $request->sizes_json != null) ? $request->sizes_json : '{}',
+            'price' => DB::raw('CAST(' . $request->price . ' as decimal(16,2))'),
+            'updated_at' => $formater->getTime('0 days', 'America/Bogota', 'Y-m-d H:i:s')
+        ]);
 
         return redirect()->route('articulos-base.index')
             ->with('success', 'BaseArticle created successfully.');
@@ -54,25 +68,26 @@ class BaseArticleController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        $baseArticle = BaseArticle::find($id);
+        $baseArticle = BaseArticle::where("article_id", '=', $id)->get()[0];
+        $filesManager = new FileManager();
 
-        return view('base-article.show', compact('baseArticle'));
+        return view('base-article.show', compact('baseArticle', 'filesManager'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        $baseArticle = BaseArticle::find($id);
+        $baseArticle = BaseArticle::where("article_id", '=', $id)->get()[0];
 
         return view('base-article.edit', compact('baseArticle'));
     }
@@ -80,15 +95,24 @@ class BaseArticleController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  BaseArticle $baseArticle
+     * @param \Illuminate\Http\Request $request
+     * @param BaseArticle $baseArticle
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, BaseArticle $baseArticle)
+    public function update(Request $request, BaseArticle $baseArticle, $id = '')
     {
         request()->validate(BaseArticle::$rules);
 
-        $baseArticle->update($request->all());
+        $formater = new Formatter();
+        $fileManager = new FileManager();
+
+        $baseArticle->where("article_id", '=', $id)->update([
+            'article_blob' => $fileManager->storeImage($request->file('article_blob')),
+            'specs_json' => $request->specs_json,
+            'sizes_json' => $request->sizes_json,
+            'price' => number_format($request->price, 2),
+            'updated_at' => $formater->getTime()
+        ]);
 
         return redirect()->route('articulos-base.index')
             ->with('success', 'BaseArticle updated successfully');
@@ -101,7 +125,7 @@ class BaseArticleController extends Controller
      */
     public function destroy($id)
     {
-        $baseArticle = BaseArticle::find($id)->delete();
+        $baseArticle = BaseArticle::where("article_id", '=', $id)->delete();
 
         return redirect()->route('articulos-base.index')
             ->with('success', 'BaseArticle deleted successfully');

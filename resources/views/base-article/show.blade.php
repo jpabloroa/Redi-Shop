@@ -19,14 +19,14 @@
                     </div>
 
                     <div class="card-body">
-                        
+
                         <div class="form-group">
                             <strong>Article Id:</strong>
                             {{ $baseArticle->article_id }}
                         </div>
                         <div class="form-group">
                             <strong>Article Blob:</strong>
-                            {{ $baseArticle->article_blob }}
+                            {{ $filesManager->getImage($baseArticle->article_blob, ['codec' => '']) }}
                         </div>
                         <div class="form-group">
                             <strong>Material Json:</strong>
