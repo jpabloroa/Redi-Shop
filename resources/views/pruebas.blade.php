@@ -9,13 +9,14 @@ $userName = 'jpablonano';
 echo $formatter->getTime('2 days');
 */
 
-?>
-<form action="{{url('/pruebas-post')}}" method="post" enctype="multipart/form-data">
+error_log('viva el perico', 1, 'jpablonano@gmail.com');
+
+/*<form action="{{url('/pruebas-post')}}" method="post" enctype="multipart/form-data">
     @csrf
-    <input type="file" name="file">
+    <input type="file" name="file" value="ola">
     <input type="submit">
-</form>
-<?php
+</form>*/
+
 /*
 use App\Http\Tools\Encrypter;
 

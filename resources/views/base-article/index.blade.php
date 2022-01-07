@@ -56,7 +56,7 @@
 
                                         <td>{{ $baseArticle->article_id }}</td>
                                         <td>{!! $filesManager->getImage($baseArticle->article_blob,['codec'=>'']) !!}</td>
-                                        <td>{{ $baseArticle->material_json }}</td>
+                                        <td>{{ $baseArticle->specs_json }}</td>
                                         <td>{{ $baseArticle->sizes_json }}</td>
                                         <td>{{ $baseArticle->price }}</td>
 

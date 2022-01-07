@@ -22,10 +22,10 @@ class BaseArticle extends Model
 {
     static $rules = [
         'article_id' => ['required', 'string'],
-        'article_blob' => ['required', 'image'],
+        'article_blob' => ['image'],
         'specs_json' => ['json'],
         'sizes_json' => ['json'],
-        'price' => ['required', 'integer'],
+        'price' => ['numeric'],
     ];
 
     /**

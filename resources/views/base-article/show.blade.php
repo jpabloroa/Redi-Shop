@@ -21,12 +21,12 @@
                     <div class="card-body">
 
                         <div class="form-group">
-                            <strong>{{__('Id Artículo')}}:</strong>
-                            {{ $baseArticle->article_id }}
-                        </div>
-                        <div class="form-group">
                             <strong>{{__('Directorio Archivo Blob - hash/sha256')}}:</strong>
                             {!! $filesManager->getImage($baseArticle->article_blob, ['codec' => '']) !!}
+                        </div>
+                        <div class="form-group">
+                            <strong>{{__('Id Artículo')}}:</strong>
+                            {{ $baseArticle->article_id }}
                         </div>
                         <div class="form-group">
                             <strong>{{__('Especificaciones artículo - Json')}}:</strong>

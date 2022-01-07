@@ -29,11 +29,15 @@ Route::get('/pruebas', function () {
 });
 Route::post('/pruebas-post', function (Request $request) {
     $manager = new FileManager();
+    error_log("Clave recibida: " . json_encode($request), 0);
+
     if ($request->hasFile('file')) {
         $filepath = $manager->storeImage($request->file('file'));
         echo '<h1>' . $filepath . '</h1>';
         echo $manager->getImage($filepath, ['codec' => '']);
     }
+
+    echo '<h1>File = ' . ((!is_null($request->file)) ? $request->file : 'perico') . '</h1>';
 
     echo '<hr>';
     //echo '<h1>' . $manager->storeImage($_POST['file']) . '</h1>';

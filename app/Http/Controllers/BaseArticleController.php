@@ -93,8 +93,9 @@ class BaseArticleController extends Controller
     public function edit($id)
     {
         $baseArticle = BaseArticle::where("article_id", '=', $id)->get()[0];
+        $filesManager = new FileManager();
 
-        return view('base-article.edit', compact('baseArticle'));
+        return view('base-article.edit', compact('baseArticle', 'filesManager'));
     }
 
     /**
@@ -106,26 +107,34 @@ class BaseArticleController extends Controller
      */
     public function update(Request $request, BaseArticle $baseArticle, $id = '')
     {
-        try {
-            request()->validate(BaseArticle::$rules);
+        //try {
+        request()->validate(BaseArticle::$rules);
 
-            $formater = new Formatter();
-            $fileManager = new FileManager();
+        $formater = new Formatter();
+        $filesManager = new FileManager();
 
-            $baseArticle->where("article_id", '=', $id)->update([
-                'article_blob' => $fileManager->storeImage($request->file('article_blob')),
-                'specs_json' => $request->specs_json,
-                'sizes_json' => $request->sizes_json,
-                'price' => number_format($request->price, 2),
-                'updated_at' => $formater->getTime()
-            ]);
+        $toUpdate = [
+            'article_blob' => (is_null($request->article_blob)) ? $request->existing_blob : $filesManager->updateImage($request->existing_blob, $request->article_blob),
+            'specs_json' => (isset($request->specs_json) && $request->specs_json != null) ? $request->specs_json : '{}',
+            'sizes_json' => (isset($request->sizes_json) && $request->sizes_json != null) ? $request->sizes_json : '{}',
+            'price' => DB::raw('CAST(' . $request->price . ' as decimal(16,2))'),
+            'updated_at' => $formater->getTime('0 days', 'America/Bogota', 'Y-m-d H:i:s')
+        ];
 
-            return redirect()->route('articulos-base.index')
-                ->with('success', 'Recurso ' . $request->article_id . ' editado exitosamente');
-        } catch (\Exception $e) {
-            return redirect()->route('articulos-base.index')
-                ->with('error', 'Error! - Detalles: ' . $e->getMessage());
+        //(!is_null($request->article_blob)) ? : $request->existing_blob
+
+        foreach ($toUpdate as $key => $value) {
+            error_log("Clave: $key => $value", 0);
         }
+
+        $baseArticle->where("article_id", '=', $id)->update($toUpdate);
+
+        return redirect()->route('articulos-base.index')
+            ->with('success', 'Recurso ' . $request->article_id . ' editado exitosamente');
+        /*} catch (\Exception $e) {
+            return redirect()->route('articulos-base.index')
+                ->with('error', 'Error! - Detalles: Perico' . $e->getMessage());
+        }*/
 
     }
 
@@ -138,6 +147,9 @@ class BaseArticleController extends Controller
     {
         try {
             $baseArticle = BaseArticle::where("article_id", '=', $id)->delete();
+            $filesManager = new FilesManager();
+
+            $filesManager->deleteImage($baseArticle->article_blob);
 
             return redirect()->route('articulos-base.index')
                 ->with('success', 'Recurso ' . $id . ' eliminado exitosamente');

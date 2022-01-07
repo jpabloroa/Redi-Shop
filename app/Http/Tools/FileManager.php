@@ -51,9 +51,9 @@ class FileManager
             case 'html':
                 switch ($codec) {
                     case 'base64':
-                        return "<img src='data:image/bmp;base64," . base64_encode($image) . "' alt='" . $name . "'>";
+                        return "<img class='rounded mx-auto d-block' src='data:image/bmp;base64," . base64_encode($image) . "' alt='" . $name . "'>";
                     default:
-                        return "<img src='" . $url . "' alt='" . $name . "'>";
+                        return "<img class='rounded mx-auto d-block' src='" . $url . "' alt='" . $name . "'>";
                 }
             case 'url':
                 switch ($codec) {
@@ -76,8 +76,29 @@ class FileManager
         }
     }
 
-    public function deleteImage(){
+    public function updateImage($from = null, $to = null)
+    {
+        $file = file_get_contents($to);
+        $generatedHash = hash('sha256', base64_encode($file));
+        if (!Storage::disk($this->diskName)->exists($this->imagesDirectory . '/' . $generatedHash)) {
+            Storage::putFileAs($this->imagesDirectory, new File($to), $generatedHash);
+            Storage::delete($this->imagesDirectory . '/' . $from);
+        }
+        return $generatedHash;
+    }
 
+    /**
+     * @param $filePath
+     * @return false|string
+     */
+    public function deleteImage($filePath = null)
+    {
+        $file = file_get_contents($filePath);
+        $generatedHash = hash('sha256', base64_encode($file));
+        if (!Storage::disk($this->diskName)->exists($this->imagesDirectory . '/' . $generatedHash)) {
+            Storage::delete($this->imagesDirectory . '/' . $generatedHash);
+        }
+        return $generatedHash;
     }
 
 }
