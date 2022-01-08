@@ -21,25 +21,30 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Article extends Model
 {
-    
-    static $rules = [
-		'article_id' => 'required',
-		'creator_id' => 'required',
-		'article_blob' => 'required',
-		'base_article_id' => 'required',
-		'price' => 'required',
-		'stock' => 'required',
-    ];
 
-    protected $perPage = 20;
+    static $rules = [
+        'article_id' => ['required', 'string'],
+        'creator_id' => ['required', 'email'],
+        'article_blob' => ['string'],
+        'base_article_id' => ['required', 'string'],
+        'price' => ['numeric'],
+        'stock' => ['numeric'],
+    ];
 
     /**
      * Attributes that should be mass-assignable.
      *
      * @var array
      */
-    protected $fillable = ['article_id','creator_id','article_blob','base_article_id','price','stock'];
-
+    protected $fillable = [
+        'article_id',
+        'creator_id',
+        'article_blob',
+        'base_article_id',
+        'price',
+        'stock',
+        'updated_at'
+    ];
 
 
 }

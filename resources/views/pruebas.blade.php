@@ -9,7 +9,8 @@ $userName = 'jpablonano';
 echo $formatter->getTime('2 days');
 */
 
-error_log('viva el perico', 1, 'jpablonano@gmail.com');
+
+
 
 /*<form action="{{url('/pruebas-post')}}" method="post" enctype="multipart/form-data">
     @csrf

@@ -7,6 +7,7 @@ use App\Http\Tools\Formatter;
 use App\Models\BaseArticle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PHPUnit\Exception;
 
 /**
  * Class BaseArticleController
@@ -21,11 +22,15 @@ class BaseArticleController extends Controller
      */
     public function index()
     {
-        $baseArticles = BaseArticle::paginate();
-        $filesManager = new FileManager();
+        try {
+            $baseArticles = BaseArticle::paginate();
+            $filesManager = new FileManager();
 
-        return view('base-article.index', compact('baseArticles', 'filesManager'))
-            ->with('i', (request()->input('page', 1) - 1) * $baseArticles->perPage());
+            return view('base-article.index', compact('baseArticles', 'filesManager'))
+                ->with('i', (request()->input('page', 1) - 1) * $baseArticles->perPage());
+        } catch (Exception $e) {
+            App\Http\Tools\Handler::error($e);
+        }
     }
 
     /**
