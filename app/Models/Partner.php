@@ -20,13 +20,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Partner extends Model
 {
-    
+
     static $rules = [
-		'partner_id' => 'required',
-		'brand_name' => 'required',
-		'address' => 'required',
-		'phone' => 'required',
-		'email' => 'required',
+        'username' => ['required', 'email'],
+        'phone' => ['required', 'numeric'],
+        'brand_name' => ['string'],
+        'address' => ['string'],
+        'updated_at' => ['numeric'],
     ];
 
     protected $perPage = 20;
@@ -36,8 +36,13 @@ class Partner extends Model
      *
      * @var array
      */
-    protected $fillable = ['partner_id','brand_name','address','phone','email'];
-
+    protected $fillable = [
+        'username',
+        'phone',
+        'brand_name',
+        'address',
+        'updated_at',
+    ];
 
 
 }

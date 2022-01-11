@@ -1,7 +1,10 @@
 @extends('layouts.app')
 
 @section('template_title')
-    {{ $partner->name ?? 'Show Partner' }}
+    <div class="d-flex justify-content-between">
+        <h4 class="mb-0 py-1">Ver: {{$partner->username}}</h4>
+        <a class="btn btn-primary " href="{{ route('socios.index') }}"> {{__('Atrás')}}</a>
+    </div>
 @endsection
 
 @section('content')
@@ -10,35 +13,31 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <div class="float-left">
-                            <span class="card-title">Show Partner</span>
+                    <!--<div class="float-left">
+                            <span class="card-title">{{$partner->name}}</span>
                         </div>
                         <div class="float-right">
-                            <a class="btn btn-primary" href="{{ route('socios.index') }}"> Back</a>
-                        </div>
+                            <a class="btn btn-primary" href="{{ route('socios.index') }}"> {{__('Atrás')}}</a>
+                        </div>-->
                     </div>
 
                     <div class="card-body">
-                        
+
                         <div class="form-group">
-                            <strong>Partner Id:</strong>
-                            {{ $partner->partner_id }}
-                        </div>
-                        <div class="form-group">
-                            <strong>Brand Name:</strong>
+                            <strong>{{__('Nombre de marca')}}:</strong>
                             {{ $partner->brand_name }}
                         </div>
                         <div class="form-group">
-                            <strong>Address:</strong>
+                            <strong>{{__('Nombre socio')}}:</strong>
+                            {{ $partner->username }}
+                        </div>
+                        <div class="form-group">
+                            <strong>{{__('Dirección')}}:</strong>
                             {{ $partner->address }}
                         </div>
                         <div class="form-group">
-                            <strong>Phone:</strong>
+                            <strong>{{__('Teléfono')}}:</strong>
                             {{ $partner->phone }}
-                        </div>
-                        <div class="form-group">
-                            <strong>Email:</strong>
-                            {{ $partner->email }}
                         </div>
 
                     </div>

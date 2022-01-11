@@ -7,7 +7,6 @@ use App\Http\Tools\Formatter;
 use App\Models\BaseArticle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use PHPUnit\Exception;
 
 /**
  * Class BaseArticleController
@@ -22,15 +21,11 @@ class BaseArticleController extends Controller
      */
     public function index()
     {
-        try {
-            $baseArticles = BaseArticle::paginate();
-            $filesManager = new FileManager();
+        $baseArticles = BaseArticle::paginate();
+        $filesManager = new FileManager();
 
-            return view('base-article.index', compact('baseArticles', 'filesManager'))
-                ->with('i', (request()->input('page', 1) - 1) * $baseArticles->perPage());
-        } catch (Exception $e) {
-            App\Http\Tools\Handler::error($e);
-        }
+        return view('base-article.index', compact('baseArticles', 'filesManager'))
+            ->with('i', (request()->input('page', 1) - 1) * $baseArticles->perPage());
     }
 
     /**
@@ -125,12 +120,6 @@ class BaseArticleController extends Controller
             'price' => DB::raw('CAST(' . $request->price . ' as decimal(16,2))'),
             'updated_at' => $formater->getTime('0 days', 'America/Bogota', 'Y-m-d H:i:s')
         ];
-
-        //(!is_null($request->article_blob)) ? : $request->existing_blob
-
-        foreach ($toUpdate as $key => $value) {
-            error_log("Clave: $key => $value", 0);
-        }
 
         $baseArticle->where("article_id", '=', $id)->update($toUpdate);
 

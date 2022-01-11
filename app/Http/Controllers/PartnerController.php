@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Tools\Formatter;
 use App\Models\Partner;
 use Illuminate\Http\Request;
 
@@ -38,28 +39,36 @@ class PartnerController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         request()->validate(Partner::$rules);
 
-        $partner = Partner::create($request->all());
+        $formater = new Formatter();
+
+        $partner = Partner::create([
+            'username' => $request->username,
+            'phone' => $request->phone,
+            'brand_name' => (!is_null($request->brand_name)) ? $request->brand_name : $request->username,
+            'address' => (!is_null($request->address)) ? $request->address : 'Remote Location',
+            'updated_at' => $formater->getTime('0 days', 'America/Bogota', 'Y-m-d H:i:s')
+        ]);
 
         return redirect()->route('socios.index')
-            ->with('success', 'Partner created successfully.');
+            ->with('success', 'Bienvenido a la familia de socios de ' . config('app.name') . ' <strong>' . $request->username . '</strong>!');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        $partner = Partner::find($id);
+        $partner = Partner::where('username', '=', $id)->get()[0];
 
         return view('partner.show', compact('partner'));
     }
@@ -67,12 +76,12 @@ class PartnerController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        $partner = Partner::find($id);
+        $partner = Partner::where('username', '=', $id)->get()[0];
 
         return view('partner.edit', compact('partner'));
     }
@@ -80,18 +89,28 @@ class PartnerController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  Partner $partner
+     * @param \Illuminate\Http\Request $request
+     * @param Partner $partner
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Partner $partner)
+    public function update(Request $request, Partner $partner, $id = '')
     {
         request()->validate(Partner::$rules);
 
-        $partner->update($request->all());
+        $formater = new Formatter();
+
+        $toUpdate = [
+            'username' => $request->username,
+            'phone' => $request->phone,
+            'brand_name' => (!is_null($request->brand_name)) ? $request->brand_name : $request->username,
+            'address' => (!is_null($request->address)) ? $request->address : 'Remote Location',
+            'updated_at' => $formater->getTime('0 days', 'America/Bogota', 'Y-m-d H:i:s')
+        ];
+
+        $partner->where('username', '=', $id)->update($toUpdate);;
 
         return redirect()->route('socios.index')
-            ->with('success', 'Partner updated successfully');
+            ->with('success', 'Datos de <strong>' . $id . '</strong> actualizados satisfactoriamente');
     }
 
     /**
@@ -101,9 +120,9 @@ class PartnerController extends Controller
      */
     public function destroy($id)
     {
-        $partner = Partner::find($id)->delete();
+        $partner = Partner::where('username', '=', $id)->delete();
 
         return redirect()->route('socios.index')
-            ->with('success', 'Partner deleted successfully');
+            ->with('success', 'Datos de <strong>' . $id . '</strong> eliminados satisfactoriamente');
     }
 }

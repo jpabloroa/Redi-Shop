@@ -83,7 +83,12 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{id}/edit', [OrderController::class, 'edit']);
             Route::post('/{id}', [OrderController::class, 'update']);
         });
-
+        Route::prefix('articulos-base')->group(function () {
+            Route::get('/', [BaseArticleController::class, 'index']);
+            Route::get('/{id}', [BaseArticleController::class, 'show']);
+            Route::get('/{id}/edit', [BaseArticleController::class, 'edit']);
+            Route::post('/{id}', [BaseArticleController::class, 'update']);
+        });
     });
 
     /**

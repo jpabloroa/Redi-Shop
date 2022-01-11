@@ -34,7 +34,7 @@
             @if (isset($header))
                 {{$header}}
             @else
-                @yield('header')
+                @yield('template_title')
             @endif
         </div>
     </header>
