@@ -19,6 +19,7 @@ class CreateCreatorsTable extends Migration
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->string('username');
             $table->string('phone');
+            $table->string('icon');
             $table->string('brand_name');
             $table->string('address');
             $table->string('landing_conf_json');

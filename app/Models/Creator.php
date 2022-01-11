@@ -21,14 +21,15 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Creator extends Model
 {
-    
+
     static $rules = [
-		'username' => 'required',
-		'phone' => 'required',
-		'brand_name' => 'required',
-		'landing_conf_json' => 'required',
-		'location' => 'required',
-		'address' => 'required',
+        'username' => ['required', 'email'],
+        'phone' => ['required', 'numeric'],
+        'icon' => ['image'],
+        'brand_name' => ['string'],
+        'address' => ['string'],
+        'landing_conf_json' => ['string'],
+        'location' => ['string'],
     ];
 
     protected $perPage = 20;
@@ -38,8 +39,14 @@ class Creator extends Model
      *
      * @var array
      */
-    protected $fillable = ['username','phone','brand_name','landing_conf_json','location','address'];
-
+    protected $fillable = [
+        'username',
+        'phone',
+        'brand_name',
+        'address',
+        'landing_conf_json',
+        'location',
+    ];
 
 
 }

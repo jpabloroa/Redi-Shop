@@ -4,7 +4,6 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\BaseArticleController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PartnerController;
-use App\Http\Tools\FileManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -28,18 +27,10 @@ Route::get('/pruebas', function () {
     return view('pruebas');
 });
 Route::post('/pruebas-post', function (Request $request) {
-    $manager = new FileManager();
-    error_log("Clave recibida: " . json_encode($request), 0);
-
-    if ($request->hasFile('file')) {
-        $filepath = $manager->storeImage($request->file('file'));
-        echo '<h1>' . $filepath['broke'] . '</h1>';
-        echo $manager->getImage($filepath, ['codec' => '']);
-    }
-
-    echo '<h1>File = ' . ((!is_null($request->file)) ? $request->file : 'perico') . '</h1>';
-
-    echo '<hr>';
+    // filtro &no_annotations=1 => sin anotaciones
+    $meta = new \App\Http\Tools\MetaData();
+    $obj = $meta->getFormattedLocation('4.7379369','-74.0570708');
+    echo "<h1>" . $obj->formatted . "</h1>";
 });
 
 Route::get('/dashboard', function () {
