@@ -93,12 +93,13 @@ class FileManager
      */
     public function deleteImage($filePath = null)
     {
-        $file = file_get_contents($filePath);
-        $generatedHash = hash('sha256', base64_encode($file));
-        if (!Storage::disk($this->diskName)->exists($this->imagesDirectory . '/' . $generatedHash)) {
-            Storage::delete($this->imagesDirectory . '/' . $generatedHash);
+        //$file = file_get_contents($filePath);
+        //$generatedHash = hash('sha256', base64_encode($file));
+        if (!Storage::disk($this->diskName)->exists($this->imagesDirectory . '/' . $filePath)) {
+            Storage::delete($this->imagesDirectory . '/' . $filePath);
+            return true;
         }
-        return $generatedHash;
+        return false;
     }
 
 }

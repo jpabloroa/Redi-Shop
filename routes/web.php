@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\BaseArticleController;
+use App\Http\Controllers\CreatorController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PartnerController;
 use Illuminate\Http\Request;
@@ -89,6 +90,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', function () {
             return '<h1>Página de Incio</h1>';
         });
+        Route::resource('creadores', CreatorController::class);
         Route::resource('socios', PartnerController::class);
         Route::resource('articulos', ArticleController::class);
         Route::resource('articulos-base', BaseArticleController::class);

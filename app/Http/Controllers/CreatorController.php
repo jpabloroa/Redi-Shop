@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Tools\FileManager;
+use App\Http\Tools\Formatter;
+use App\Http\Tools\MetaData;
 use App\Models\Creator;
 use Illuminate\Http\Request;
 
@@ -19,8 +22,11 @@ class CreatorController extends Controller
     public function index()
     {
         $creators = Creator::paginate();
+        $filesManager = new FileManager();
 
-        return view('creator.index', compact('creators'))
+        $filesManager->imagesDirectory = 'public/images/creators';
+
+        return view('creator.index', compact('creators', 'filesManager'))
             ->with('i', (request()->input('page', 1) - 1) * $creators->perPage());
     }
 
@@ -38,60 +44,101 @@ class CreatorController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         request()->validate(Creator::$rules);
 
-        $creator = Creator::create($request->all());
+        $formatter = new Formatter();
+        $fileManager = new FileManager();
+        $meta = new MetaData();
+
+        $fileManager->imagesDirectory = 'public/images/creators';
+
+        $creator = Creator::create([
+            'username' => $request->username,
+            'phone' => $request->phone,
+            'icon' => (is_null($request->icon)) ? 'default' : $fileManager->storeImage($request->file('icon')),
+            'brand_name' => (is_null($request->brand_name)) ? 'user-' . base64_encode($request->username) : $request->brand_name,
+            'address' => (is_null($request->address)) ? ((isset($meta->getFormattedLocation($request->latitude, $request->longitude)['formatted'])) ? $meta->getFormattedLocation($request->latitude, $request->longitude)['formatted'] : 'Unable to Locate') : $request->address,
+            'landing_conf_json' => $request->landing_conf_json,
+            'location' => $request->latitude . ',' . $request->longitude,
+            'updated_at' => $formatter->getTime('0 days', 'America/Bogota', 'Y-m-d H:i:s')
+        ]);
 
         return redirect()->route('creadores.index')
-            ->with('success', 'Creator created successfully.');
+            ->with('success', 'Recurso ' . $id . ' creado exitosamente');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        $creator = Creator::find($id);
+        $creator = Creator::where('username', '=', $id)->get()[0];
+        $filesManager = new FileManager();
 
-        return view('creator.show', compact('creator'));
+        $filesManager->imagesDirectory = 'public/images/creators';
+
+        return view('creator.show', compact('creator', 'filesManager'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        $creator = Creator::find($id);
+        $creator = Creator::where('username', '=', $id)->get()[0];
+        $fileManager = new FileManager();
 
-        return view('creator.edit', compact('creator'));
+        $fileManager->imagesDirectory = 'public/images/creators';
+
+        return view('creator.edit', compact('creator', 'fileManager'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  Creator $creator
+     * @param \Illuminate\Http\Request $request
+     * @param Creator $creator
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Creator $creator)
+    public function update(Request $request, Creator $creator, $id = '')
     {
-        request()->validate(Creator::$rules);
+        try {
+            request()->validate(Creator::$rules);
 
-        $creator->update($request->all());
+            $formater = new Formatter();
+            $fileManager = new FileManager();
+            $meta = new MetaData();
 
-        return redirect()->route('creadores.index')
-            ->with('success', 'Creator updated successfully');
+            $fileManager->imagesDirectory = 'public/images/creators';
+
+            $creator->where('username', '=', $id)->update([
+                //'username' => $request->username,
+                'phone' => $request->phone,
+                'icon' => (is_null($request->file('icon'))) ? $request->existing_icon : $fileManager->updateImage($request->existing_icon, $request->file('icon')),
+                'brand_name' => (is_null($request->brand_name)) ? 'user-' . base64_encode($request->username) : $request->brand_name,
+                'address' => (is_null($request->address)) ? ((isset($meta->getFormattedLocation($request->latitude, $request->longitude)['formatted'])) ? $meta->getFormattedLocation($request->latitude, $request->longitude)['formatted'] : 'Unable to Locate') : $request->address,
+                'landing_conf_json' => $request->landing_conf_json,
+                //'location' => $request->latitude . ',' . $request->longitude,
+                'updated_at' => $formater->getTime('0 days', 'America/Bogota', 'Y-m-d H:i:s')
+            ]);
+
+            return redirect()->route('creadores.index')
+                ->with('success', 'Recurso ' . $id . ' actualizado exitosamente');
+        } catch (\Exception $e) {
+            return redirect()->route('creadores.index')
+                ->with('error', 'Error! - Detalles: Perico' . $e->getMessage());
+        }
     }
 
     /**
@@ -101,9 +148,21 @@ class CreatorController extends Controller
      */
     public function destroy($id)
     {
-        $creator = Creator::find($id)->delete();
+        try {
+            $creator = Creator::where('username', '=', $id);
 
-        return redirect()->route('creadores.index')
-            ->with('success', 'Creator deleted successfully');
+            $fileManager = new FileManager();
+            $fileManager->imagesDirectory = 'public/images/creators';
+            $fileManager->deleteImage($creator->get()[0]->icon);
+
+            //
+            $creator->delete();
+
+            return redirect()->route('creadores.index')
+                ->with('success', 'Recurso ' . $id . ' eliminado exitosamente');
+        } catch (\Exception $e) {
+            return redirect()->route('creadores.index')
+                ->with('error', 'Error! - Detalles: ' . $e->getMessage());
+        }
     }
 }

@@ -1,7 +1,10 @@
 @extends('layouts.app')
 
 @section('template_title')
-    {{__('Artículos Base')}}
+    <div class="d-flex justify-content-between">
+        <h4 class="mb-0 py-1">{{__('Creadores')}}</h4>
+        <a class="btn btn-primary " href="{{ route('articulos-base.create') }}"> {{__('Nuevo')}}</a>
+    </div>
 @endsection
 
 @section('content')
@@ -10,7 +13,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <!--<div style="display: flex; justify-content: space-between; align-items: center;">
 
                             <span id="card_title">
                                 {{ __('Base Article') }}
@@ -22,7 +25,7 @@
                                     {{ __('Create New') }}
                                 </a>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                     @if ($message = Session::get('success'))
                         <div class="alert alert-success">
@@ -66,14 +69,14 @@
                                                 method="POST">
                                                 <a class="btn btn-sm btn-primary "
                                                    href="{{ route('articulos-base.show',$baseArticle->article_id) }}"><i
-                                                        class="fa fa-fw fa-eye"></i> Show</a>
+                                                        class="fa fa-fw fa-eye"></i> {{__('Ver')}}</a>
                                                 <a class="btn btn-sm btn-success"
                                                    href="{{ route('articulos-base.edit',$baseArticle->article_id) }}"><i
-                                                        class="fa fa-fw fa-edit"></i> Edit</a>
+                                                        class="fa fa-fw fa-edit"></i> {{__('Editar')}}</a>
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm"><i
-                                                        class="fa fa-fw fa-trash"></i> Delete
+                                                        class="fa fa-fw fa-trash"></i> {{__('Eliminar')}}
                                                 </button>
                                             </form>
                                         </td>

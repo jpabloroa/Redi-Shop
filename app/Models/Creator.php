@@ -21,14 +21,18 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Creator extends Model
 {
+    protected $attributes = [
+        'brand_name' => 'mi-marca',
+        'landing_conf_json' => '{}',
+    ];
 
     static $rules = [
-        'username' => ['required', 'email'],
-        'phone' => ['required', 'numeric'],
+        'username' => ['required', 'string'],
+        'phone' => ['required', 'string'],
         'icon' => ['image'],
         'brand_name' => ['string'],
-        'address' => ['string'],
-        'landing_conf_json' => ['string'],
+        'address' => ['nullable'],
+        'landing_conf_json' => ['json'],
         'location' => ['string'],
     ];
 
@@ -42,6 +46,7 @@ class Creator extends Model
     protected $fillable = [
         'username',
         'phone',
+        'icon',
         'brand_name',
         'address',
         'landing_conf_json',

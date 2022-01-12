@@ -1,7 +1,10 @@
 @extends('layouts.app')
 
 @section('template_title')
-    {{__('Ver '.$baseArticle->article_id)}}
+    <div class="d-flex justify-content-between">
+        <h4 class="mb-0 py-1">Ver: {{$baseArticle->article_id}}</h4>
+        <a class="btn btn-primary " href="{{ route('articulos-base.index') }}"> {{__('Atrás')}}</a>
+    </div>
 @endsection
 
 @section('content')
@@ -10,12 +13,13 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
+                        <!--
                         <div class="float-left">
                             <span class="card-title">{{__('Ver '.$baseArticle->article_id)}}</span>
                         </div>
                         <div class="float-right">
                             <a class="btn btn-primary" href="{{ route('articulos-base.index') }}"> Back</a>
-                        </div>
+                        </div>-->
                     </div>
 
                     <div class="card-body">

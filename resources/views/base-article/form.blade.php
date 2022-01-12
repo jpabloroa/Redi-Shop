@@ -4,7 +4,7 @@
         <div class="form-group">
         <!--{{ Form::label('article_blob') }}
         {{ Form::text('article_blob', $baseArticle->article_blob, ['class' => 'form-control' . ($errors->has('article_blob') ? ' is-invalid' : ''), 'placeholder' => __('Directorio Archivo Blob - hash/sha256')]) }}-->
-            <input type="file" class="mt-3 form-control" placeholder="Article Blob" name="article_blob"
+            <input type="file" class="mt-3 form-control" placeholder="{{__('Imagen artículo')}}" name="article_blob"
                    id="article_blob">
             {!!(!is_null($baseArticle->article_blob))? '<input type="hidden" name="existing_blob" value="'.$baseArticle->article_blob.'">':'';!!}
             {!! $errors->first('article_blob', '<div class="invalid-feedback">:message</p>') !!}

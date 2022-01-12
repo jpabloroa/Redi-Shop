@@ -2,7 +2,7 @@
     <div class="box-body">
 
         <div class="form-group">
-            <label class="mt-3">{{__('Email')}}</label>
+            <label class="mt-3">{{__('Usuario')}}</label>
             {{ Form::text('username', $partner->username, ['class' => 'form-control' . ($errors->has('username') ? ' is-invalid' : ''), 'placeholder' => __('ej. alguien@ejemplo.com')]) }}
             {!! $errors->first('username', '<div class="invalid-feedback">:message</p>') !!}
         </div>
@@ -23,6 +23,6 @@
         </div>
     </div>
     <div class="box-footer mt20">
-        <button type="submit" class="w-full btn btn-primary">{{__('Enviar')}}</button>
+        <button type="submit" class="w-full btn mt-3 btn-primary">{{__('Enviar')}}</button>
     </div>
 </div>

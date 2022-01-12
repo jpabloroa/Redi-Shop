@@ -23,7 +23,7 @@ class Partner extends Model
 
     static $rules = [
         'username' => ['required', 'email'],
-        'phone' => ['required', 'numeric'],
+        'phone' => ['required', 'string'],
         'brand_name' => ['string'],
         'address' => ['string'],
         'updated_at' => ['numeric'],

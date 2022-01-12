@@ -2,6 +2,8 @@
 
 namespace App\Http\Tools;
 
+use Illuminate\Support\Facades\Log;
+
 class MetaData
 {
     private $keys;
@@ -15,8 +17,12 @@ class MetaData
 
     public function getFormattedLocation($lat = '', $lng = '')
     {
-        // filtro &no_annotations=1 => sin anotaciones
-        $obj = json_decode(file_get_contents('https://api.opencagedata.com/geocode/v1/json?q=' . $lat . '+' . $lng . '&key=' . $this->keys['opencagedata'] . '&language=es'));
-        return $obj->results[0];
+        try {
+            // filtro &no_annotations=1 => sin anotaciones
+            $obj = json_decode(file_get_contents('https://api.opencagedata.com/geocode/v1/json?q=' . $lat . '+' . $lng . '&key=' . $this->keys['opencagedata'] . '&language=es'));
+        } catch (\Exception $e) {
+            Log::debug('Error: ' . $e->getMessage());
+        }
+        return (array)$obj->results[0];
     }
 }

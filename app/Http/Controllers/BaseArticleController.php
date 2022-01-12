@@ -24,6 +24,8 @@ class BaseArticleController extends Controller
         $baseArticles = BaseArticle::paginate();
         $filesManager = new FileManager();
 
+        $filesManager->imagesDirectory = 'public/images/base_articles';
+
         return view('base-article.index', compact('baseArticles', 'filesManager'))
             ->with('i', (request()->input('page', 1) - 1) * $baseArticles->perPage());
     }
@@ -53,6 +55,8 @@ class BaseArticleController extends Controller
             $formater = new Formatter();
             $fileManager = new FileManager();
 
+            $fileManager->imagesDirectory = 'public/images/base_articles';
+
             $baseArticle = BaseArticle::create([
                 'article_id' => $request->article_id,
                 'article_blob' => $fileManager->storeImage($request->file('article_blob')),
@@ -81,6 +85,8 @@ class BaseArticleController extends Controller
         $baseArticle = BaseArticle::where("article_id", '=', $id)->get()[0];
         $filesManager = new FileManager();
 
+        $filesManager->imagesDirectory = 'public/images/base_articles';
+
         return view('base-article.show', compact('baseArticle', 'filesManager'));
     }
 
@@ -95,6 +101,8 @@ class BaseArticleController extends Controller
         $baseArticle = BaseArticle::where("article_id", '=', $id)->get()[0];
         $filesManager = new FileManager();
 
+        $filesManager->imagesDirectory = 'public/images/base_articles';
+
         return view('base-article.edit', compact('baseArticle', 'filesManager'));
     }
 
@@ -107,28 +115,30 @@ class BaseArticleController extends Controller
      */
     public function update(Request $request, BaseArticle $baseArticle, $id = '')
     {
-        //try {
-        request()->validate(BaseArticle::$rules);
+        try {
+            request()->validate(BaseArticle::$rules);
 
-        $formater = new Formatter();
-        $filesManager = new FileManager();
+            $formater = new Formatter();
+            $filesManager = new FileManager();
 
-        $toUpdate = [
-            'article_blob' => (is_null($request->article_blob)) ? $request->existing_blob : $filesManager->updateImage($request->existing_blob, $request->article_blob),
-            'specs_json' => (isset($request->specs_json) && $request->specs_json != null) ? $request->specs_json : '{}',
-            'sizes_json' => (isset($request->sizes_json) && $request->sizes_json != null) ? $request->sizes_json : '{}',
-            'price' => DB::raw('CAST(' . $request->price . ' as decimal(16,2))'),
-            'updated_at' => $formater->getTime('0 days', 'America/Bogota', 'Y-m-d H:i:s')
-        ];
+            $filesManager->imagesDirectory = 'public/images/base_articles';
 
-        $baseArticle->where("article_id", '=', $id)->update($toUpdate);
+            $toUpdate = [
+                'article_blob' => (is_null($request->article_blob)) ? $request->existing_blob : $filesManager->updateImage($request->existing_blob, $request->file('article_blob')),
+                'specs_json' => (isset($request->specs_json) && $request->specs_json != null) ? $request->specs_json : '{}',
+                'sizes_json' => (isset($request->sizes_json) && $request->sizes_json != null) ? $request->sizes_json : '{}',
+                'price' => DB::raw('CAST(' . $request->price . ' as decimal(16,2))'),
+                'updated_at' => $formater->getTime('0 days', 'America/Bogota', 'Y-m-d H:i:s')
+            ];
 
-        return redirect()->route('articulos-base.index')
-            ->with('success', 'Recurso ' . $request->article_id . ' editado exitosamente');
-        /*} catch (\Exception $e) {
+            $baseArticle->where("article_id", '=', $id)->update($toUpdate);
+
+            return redirect()->route('articulos-base.index')
+                ->with('success', 'Recurso ' . $request->article_id . ' editado exitosamente');
+        } catch (\Exception $e) {
             return redirect()->route('articulos-base.index')
                 ->with('error', 'Error! - Detalles: Perico' . $e->getMessage());
-        }*/
+        }
 
     }
 
@@ -140,10 +150,14 @@ class BaseArticleController extends Controller
     public function destroy($id)
     {
         try {
-            $baseArticle = BaseArticle::where("article_id", '=', $id)->delete();
-            $filesManager = new FilesManager();
+            $baseArticle = BaseArticle::where("article_id", '=', $id);
 
-            $filesManager->deleteImage($baseArticle->article_blob);
+            $filesManager = new FileManager();
+            $filesManager->imagesDirectory = 'public/images/base_articles';
+            $filesManager->deleteImage($baseArticle->get()[0]->article_blob);
+
+            //
+            $baseArticle->delete();
 
             return redirect()->route('articulos-base.index')
                 ->with('success', 'Recurso ' . $id . ' eliminado exitosamente');

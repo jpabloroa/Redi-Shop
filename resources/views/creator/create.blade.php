@@ -1,7 +1,10 @@
 @extends('layouts.app')
 
 @section('template_title')
-    Create Creator
+    <div class="d-flex justify-content-between">
+        <h4 class="mb-0 py-1">{{__('Registro')}}</h4>
+        <a class="btn btn-primary " href="{{ route('creadores.index') }}"> {{__('Atrás')}}</a>
+    </div>
 @endsection
 
 @section('content')
@@ -13,7 +16,7 @@
 
                 <div class="card card-default">
                     <div class="card-header">
-                        <span class="card-title">Create Creator</span>
+                        <!--<span class="card-title">Create Creator</span>-->
                     </div>
                     <div class="card-body">
                         <form method="POST" action="{{ route('creadores.store') }}"  role="form" enctype="multipart/form-data">

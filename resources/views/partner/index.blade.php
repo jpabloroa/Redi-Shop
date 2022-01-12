@@ -29,6 +29,10 @@
                         <div class="alert alert-success">
                             <h5>{!! $message !!}</h5>
                         </div>
+                    @elseif ($message = Session::get('error'))
+                        <div class="alert alert-danger">
+                            <p>{{ $message }}</p>
+                        </div>
                     @endif
 
                     <div class="card-body">
@@ -36,7 +40,7 @@
                             <table class="table table-striped table-hover">
                                 <thead class="thead">
                                 <tr>
-                                    <th>No</th>
+                                    <th>#</th>
 
                                     <th>{{__('Nombre de Marca')}}</th>
                                     <th>{{__('Nombre de socio')}}</th>
