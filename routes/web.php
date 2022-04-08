@@ -27,11 +27,20 @@ Route::get('/', function () {
 Route::get('/pruebas', function () {
     return view('pruebas');
 });
-Route::post('/pruebas-post', function (Request $request) {
-    // filtro &no_annotations=1 => sin anotaciones
+
+Route::get('/r', function (Request $request) {
+    return $request->request;
+});
+
+Route::post('/location-testing', function (Request $request) {
+    //return 'eche '. var_dump($request);
+    $position = $request->position;
     $meta = new \App\Http\Tools\MetaData();
-    $obj = $meta->getFormattedLocation('4.7379369','-74.0570708');
-    echo "<h1>" . $obj->formatted . "</h1>";
+    $obj = $meta->getFormattedLocation($position['latitude'], $position['longitude']);
+    echo $obj->formatted;
+
+    //echo 'eche';
+    //return 'eche';
 });
 
 Route::get('/dashboard', function () {
