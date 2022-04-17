@@ -1,10 +1,15 @@
 <div class="box box-info padding-1">
     <div class="box-body">
-        
+
         <div class="form-group">
-            {{ Form::label('article_id') }}
-            {{ Form::text('article_id', $article->article_id, ['class' => 'form-control' . ($errors->has('article_id') ? ' is-invalid' : ''), 'placeholder' => 'Article Id']) }}
+        <!--{{ Form::label('article_id') }}
+        {{ Form::text('article_id', $article->article_id, ['class' => 'form-control' . ($errors->has('article_id') ? ' is-invalid' : ''), 'placeholder' =>  __('Directorio Archivo Blob - hash/sha256')]) }}-->
             {!! $errors->first('article_id', '<div class="invalid-feedback">:message</p>') !!}
+            <input type="file" class="mt-3 form-control" placeholder="{{__('Imagen artículo')}}" name="article_blob"
+                   id="article_blob">
+            {!!(!is_null($baseArticle->article_blob))? '<input type="hidden" name="existing_blob" value="'.$baseArticle->article_blob.'">':'';!!}
+            {!! $errors->first('article_blob', '<div class="invalid-feedback">:message</p>') !!}
+
         </div>
         <div class="form-group">
             {{ Form::label('creator_id') }}
